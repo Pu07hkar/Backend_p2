@@ -8,7 +8,7 @@ const userRegister = async (req, res)=>{
     }
 
     try{
-    console.log("this is ",User)
+    
     const userexists = await User.findOne({email});
 
     if(userexists){
@@ -26,4 +26,34 @@ const userRegister = async (req, res)=>{
     }
 }
 
-export {userRegister};
+const getAllUsers = async (req,res)=>{
+
+    try{
+        const users = await User.find();
+        if(!users || users.length==0){
+            return res.status(400).json({message:"no user found"});
+        }
+
+        res.status(200).json({users})
+
+    }catch(err){
+        console.log("error in fetching user")
+        return res.status(400).json({message:"internal err"})
+    }
+}
+
+const getUserById = async (req,res)=>{
+    try{
+        const id = req.params.id;
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(400).json({message:"user not found"})
+        }
+        res.status(200).json({user})
+    }catch(err){
+        console.log("error in fetching user by id")
+        return res.status(400).json({message:"internal err"})
+    }
+}
+
+export {userRegister, getAllUsers,getUserById};
